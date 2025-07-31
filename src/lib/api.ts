@@ -67,11 +67,11 @@ export class ProfileService {
   static async updateProfile(userId: string, updates: Partial<UserProfile>): Promise<UserProfile> {
     const { data, error } = await supabase
       .from('user_profiles')
-      .update({
+      .upsert({
+        user_id: userId,
         ...updates,
         updated_at: new Date().toISOString()
       })
-      .eq('user_id', userId)
       .select()
       .single();
 
