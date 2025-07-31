@@ -87,7 +87,7 @@ export function Dashboard() {
             <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-200 mx-auto"></div>
             <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-600 border-t-transparent absolute top-0 left-1/2 transform -translate-x-1/2"></div>
           </div>
-          <p className="text-gray-600 font-medium">Cargando órdenes...</p>
+          <p className="text-gray-600 font-medium">{t('dashboard.loading')}</p>
         </div>
       </div>
     );
@@ -96,13 +96,13 @@ export function Dashboard() {
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center py-12">
-        <div className="text-red-600 mb-4">{error}</div>
+        <div className="text-red-600 mb-4">{t('dashboard.error')}</div>
         <button
           onClick={loadOrders}
           className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
         >
           <RefreshCw className="w-4 h-4" />
-          <span>Reintentar</span>
+          <span>{t('common.refresh')}</span>
         </button>
       </div>
     );

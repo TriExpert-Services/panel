@@ -269,21 +269,21 @@ export function OrderDetail() {
           className="flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 transition-all duration-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 px-3 py-2 rounded-lg"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Volver al Dashboard</span>
+          <span>{t('orderDetail.backToDashboard')}</span>
         </button>
         <div className="h-6 w-px bg-gray-300 dark:bg-gray-600" />
         <div>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
-            Orden #{order.id.slice(0, 8)}
+            {t('orderDetail.orderNumber')} #{order.id.slice(0, 8)}
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 font-medium">Gestiona los detalles y estado de la orden</p>
+          <p className="text-gray-600 dark:text-gray-400 font-medium">{t('orderDetail.manageDetails')}</p>
         </div>
       </div>
 
       {/* Progress Bar */}
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Progreso de Traducción</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{t('orderDetail.translationProgress')}</h3>
           <span className="text-2xl font-bold text-blue-600">{order.progress}%</span>
         </div>
         <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
@@ -293,9 +293,9 @@ export function OrderDetail() {
           />
         </div>
         <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400 mt-2">
-          <span>Iniciado</span>
-          <span>En progreso</span>
-          <span>Completado</span>
+          <span>{t('orderDetail.progressSteps.started')}</span>
+          <span>{t('orderDetail.progressSteps.inProgress')}</span>
+          <span>{t('orderDetail.progressSteps.completed')}</span>
         </div>
       </div>
 
@@ -307,7 +307,7 @@ export function OrderDetail() {
               <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
                 <User className="w-5 h-5 text-blue-600" />
               </div>
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">Información del Cliente</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('orderDetail.clientInfo')}</h2>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

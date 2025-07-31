@@ -85,7 +85,7 @@ export function ProfilePage() {
             <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-200 mx-auto"></div>
             <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-600 border-t-transparent absolute top-0 left-1/2 transform -translate-x-1/2"></div>
           </div>
-          <p className="text-gray-600 dark:text-gray-400 font-medium">Cargando perfil...</p>
+          <p className="text-gray-600 dark:text-gray-400 font-medium">{t('profile.loading')}</p>
         </div>
       </div>
     );
@@ -96,9 +96,9 @@ export function ProfilePage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
-            Mi Perfil
+            {t('profile.title')}
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 font-medium">Gestiona tu información personal</p>
+          <p className="text-gray-600 dark:text-gray-400 font-medium">{t('profile.subtitle')}</p>
         </div>
       </div>
 
@@ -124,14 +124,14 @@ export function ProfilePage() {
               <div className="space-y-3">
                 <div className="flex items-center justify-center space-x-2 text-sm">
                   <Shield className="w-4 h-4 text-green-500" />
-                  <span className="text-gray-600 dark:text-gray-400">Cuenta verificada</span>
+                  <span className="text-gray-600 dark:text-gray-400">{t('profile.accountVerified')}</span>
                 </div>
                 
                 {profile?.last_login && (
                   <div className="flex items-center justify-center space-x-2 text-sm">
                     <Clock className="w-4 h-4 text-gray-400" />
                     <span className="text-gray-600 dark:text-gray-400">
-                      Último acceso: {new Date(profile.last_login).toLocaleDateString('es-ES')}
+                      {t('profile.lastAccess')}: {new Date(profile.last_login).toLocaleDateString()}
                     </span>
                   </div>
                 )}
@@ -147,7 +147,7 @@ export function ProfilePage() {
               <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
                 <User className="w-5 h-5 text-blue-600" />
               </div>
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">Información Personal</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('profile.personalInfo')}</h2>
             </div>
 
             {error && (
@@ -159,9 +159,7 @@ export function ProfilePage() {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="full_name" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    Nombre Completo
-                  </label>
+                  <label htmlFor="full_name" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">{t('profile.fullName')}</label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <User className="h-5 w-5 text-gray-400 dark:text-gray-500" />
@@ -173,15 +171,13 @@ export function ProfilePage() {
                       value={formData.full_name}
                       onChange={handleInputChange}
                       className="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                      placeholder="Tu nombre completo"
+                      placeholder={t('profile.fullName')}
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label htmlFor="phone" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    Teléfono
-                  </label>
+                  <label htmlFor="phone" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">{t('profile.phone')}</label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <Phone className="h-5 w-5 text-gray-400 dark:text-gray-500" />
@@ -199,9 +195,7 @@ export function ProfilePage() {
                 </div>
 
                 <div>
-                  <label htmlFor="email" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    Correo Electrónico
-                  </label>
+                  <label htmlFor="email" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">{t('profile.email')}</label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <Mail className="h-5 w-5 text-gray-400 dark:text-gray-500" />
@@ -217,9 +211,7 @@ export function ProfilePage() {
                 </div>
 
                 <div>
-                  <label htmlFor="department" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    Departamento
-                  </label>
+                  <label htmlFor="department" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">{t('profile.department')}</label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <Building className="h-5 w-5 text-gray-400 dark:text-gray-500" />
@@ -231,16 +223,14 @@ export function ProfilePage() {
                       value={formData.department}
                       onChange={handleInputChange}
                       className="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                      placeholder="Traducción, Administración, etc."
+                      placeholder={t('profile.department')}
                     />
                   </div>
                 </div>
               </div>
 
               <div>
-                <label htmlFor="role" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                  Rol
-                </label>
+                <label htmlFor="role" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">{t('profile.role')}</label>
                 <select
                   id="role"
                   name="role"
@@ -248,10 +238,10 @@ export function ProfilePage() {
                   onChange={handleInputChange}
                   className="block w-full px-3 py-3 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
-                  <option value="translator">Traductor</option>
-                  <option value="admin">Administrador</option>
-                  <option value="manager">Gerente</option>
-                  <option value="reviewer">Revisor</option>
+                  <option value="translator">{t('profile.roles.translator')}</option>
+                  <option value="admin">{t('profile.roles.admin')}</option>
+                  <option value="manager">{t('profile.roles.manager')}</option>
+                  <option value="reviewer">{t('profile.roles.reviewer')}</option>
                 </select>
               </div>
 
@@ -262,7 +252,7 @@ export function ProfilePage() {
                   className="flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:from-blue-400 disabled:to-blue-500 text-white px-6 py-3 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl font-semibold"
                 >
                   <Save className="w-5 h-5" />
-                  <span>{saving ? 'Guardando...' : 'Guardar Cambios'}</span>
+                  <span>{saving ? t('profile.saving') : t('profile.saveChanges')}</span>
                 </button>
               </div>
             </form>
