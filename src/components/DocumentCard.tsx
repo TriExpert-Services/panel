@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Download, FileText, Upload, Calendar, Plus } from 'lucide-react';
 
 interface DocumentCardProps {
@@ -24,6 +25,7 @@ export function DocumentCard({
   showUpload = false,
   isEmpty = true
 }: DocumentCardProps) {
+  const { t } = useTranslation();
   
   // Parse and validate documents from Supabase JSON fields
   const validDocuments = React.useMemo(() => {
@@ -175,7 +177,7 @@ export function DocumentCard({
             <FileText className="w-8 h-8 text-gray-400 dark:text-gray-500" />
           </div>
           <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">
-            {showUpload ? 'No hay documentos traducidos' : 'No hay documentos originales'}
+            {showUpload ? t('documents.noTranslatedDocs') : t('documents.noOriginalDocs')}
           </p>
           <p className="text-xs text-gray-400 dark:text-gray-500 mb-4">
             Debug: {JSON.stringify({ documentsReceived: documents, validCount: validDocuments.length })}
@@ -186,7 +188,7 @@ export function DocumentCard({
               className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-4 py-2 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
             >
               <Upload className="w-4 h-4" />
-              <span>Subir Documento</span>
+              <span>{t('documents.uploadDocument')}</span>
             </button>
           )}
         </div>
@@ -224,7 +226,7 @@ export function DocumentCard({
                     className="flex items-center space-x-1 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-3 py-2 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl text-xs font-medium"
                   >
                     <Download className="w-3 h-3" />
-                    <span>Descargar</span>
+                    <span>{t('documents.downloadFile')}</span>
                   </button>
                 </div>
               </div>
@@ -239,7 +241,7 @@ export function DocumentCard({
                 className="flex items-center space-x-2 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-4 py-2 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm font-medium w-full justify-center"
               >
                 <Plus className="w-4 h-4" />
-                <span>Agregar más archivos</span>
+                <span>{t('documents.addMoreFiles')}</span>
               </button>
             </div>
           )}
@@ -248,7 +250,10 @@ export function DocumentCard({
           {wordCount && (
             <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                <strong>Total:</strong> {validDocuments.length} archivo{validDocuments.length > 1 ? 's' : ''} • {wordCount.toLocaleString()} palabras
+                <strong>Total:</strong> {t('documents.totalFiles', { 
+                  count: validDocuments.length, 
+                  words: wordCount.toLocaleString() 
+                })}
               </p>
             </div>
           )}

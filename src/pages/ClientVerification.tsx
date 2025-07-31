@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Eye, Download, Clock, Languages, Calendar, BarChart3, Shield, ExternalLink, ArrowLeft } from 'lucide-react';
 import { StatusBadge } from '../components/StatusBadge';
 import { PriorityBadge } from '../components/PriorityBadge';
@@ -10,6 +11,7 @@ import { TranslationOrder, TranslationOrderService } from '../lib/supabase';
 export function ClientVerification() {
   const { token } = useParams<{ token: string }>();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [order, setOrder] = useState<TranslationOrder | null>(null);
   const [loading, setLoading] = useState(true);
   const [companySettings, setCompanySettings] = useState<CompanySettings | null>(null);
@@ -77,13 +79,13 @@ export function ClientVerification() {
   const getProgressMessage = (status: string, progress: number) => {
     switch (status) {
       case 'nuevo':
-        return 'Su orden ha sido recibida y será procesada pronto.';
+        return t('clientVerification.statusMessages.nuevo');
       case 'en_proceso':
-        return `Su traducción está en progreso (${progress}% completado).`;
+        return t('clientVerification.statusMessages.en_proceso', { progress });
       case 'completado':
-        return 'Su traducción ha sido completada y está lista para entrega.';
+        return t('clientVerification.statusMessages.completado');
       case 'entregado':
-        return 'Su traducción ha sido entregada. Puede descargar los archivos traducidos.';
+        return t('clientVerification.statusMessages.entregado');
       default:
         return 'Estado desconocido.';
     }
@@ -97,7 +99,7 @@ export function ClientVerification() {
             <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-200 mx-auto"></div>
             <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-600 border-t-transparent absolute top-0 left-1/2 transform -translate-x-1/2"></div>
           </div>
-          <p className="text-gray-600 dark:text-gray-400 font-medium">Verificando orden...</p>
+          <p className="text-gray-600 dark:text-gray-400 font-medium">{t('clientVerification.verifying')}</p>
         </div>
       </div>
     );
@@ -110,13 +112,13 @@ export function ClientVerification() {
           <div className="w-16 h-16 bg-red-100 dark:bg-red-900 rounded-full flex items-center justify-center mx-auto mb-4">
             <Shield className="w-8 h-8 text-red-600 dark:text-red-400" />
           </div>
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Acceso No Autorizado</h2>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('clientVerification.accessDenied')}</h2>
           <p className="text-red-600 dark:text-red-400 mb-6">{error}</p>
           <button
             onClick={() => window.location.href = '/'}
             className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-3 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl font-semibold"
           >
-            Ir al Inicio
+            {t('clientVerification.goHome')}
           </button>
         </div>
       </div>
@@ -145,9 +147,9 @@ export function ClientVerification() {
               </div>
               <div>
                 <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
-                  Verificación de Traducción
+                  {t('clientVerification.title')}
                 </h1>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Estado de su orden</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">{t('clientVerification.subtitle')}</p>
               </div>
             </div>
           </div>
@@ -161,16 +163,16 @@ export function ClientVerification() {
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                  Orden #{order.id.slice(0, 8)}
+                  {t('clientVerification.orderNumber', { id: order.id.slice(0, 8) })}
                 </h2>
                 <p className="text-gray-600 dark:text-gray-400 mt-1">
-                  Cliente: {order.nombre}
+                  {t('clientVerification.client', { name: order.nombre })}
                 </p>
               </div>
               <div className="text-right">
                 <StatusBadge status={order.status} />
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                  Solicitado el {formatDate(order.fecha_solicitud)}
+                  {t('clientVerification.requestedOn', { date: formatDate(order.fecha_solicitud) })}
                 </p>
               </div>
             </div>
@@ -183,7 +185,7 @@ export function ClientVerification() {
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-300 mb-2">
-                    Estado de su Traducción
+                    {t('clientVerification.translationStatus')}
                   </h3>
                   <p className="text-blue-800 dark:text-blue-400">
                     {getProgressMessage(order.status, order.progress)}
@@ -195,7 +197,7 @@ export function ClientVerification() {
             {/* Progress Bar */}
             <div className="mb-6">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Progreso</span>
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('clientVerification.progress')}</span>
                 <span className="text-sm font-bold text-blue-600">{order.progress}%</span>
               </div>
               <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
@@ -213,7 +215,7 @@ export function ClientVerification() {
                   <Languages className="w-5 h-5 text-green-600" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Idiomas</p>
+                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('clientVerification.languages')}</p>
                   <p className="text-lg font-semibold text-gray-900 dark:text-white">
                     {order.idioma_origen} → {order.idioma_destino}
                   </p>
@@ -225,7 +227,7 @@ export function ClientVerification() {
                   <Clock className="w-5 h-5 text-orange-600" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Tiempo Est.</p>
+                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('clientVerification.estimatedTime')}</p>
                   <PriorityBadge processingTime={order.tiempo_procesamiento} />
                 </div>
               </div>
@@ -236,7 +238,7 @@ export function ClientVerification() {
                     <BarChart3 className="w-5 h-5 text-purple-600" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Palabras</p>
+                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('clientVerification.words')}</p>
                     <p className="text-lg font-semibold text-gray-900 dark:text-white">
                       {order.word_count.toLocaleString()}
                     </p>
@@ -250,7 +252,7 @@ export function ClientVerification() {
                     <Calendar className="w-5 h-5 text-blue-600" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Entrega Est.</p>
+                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('clientVerification.estimatedDelivery')}</p>
                     <p className="text-lg font-semibold text-gray-900 dark:text-white">
                       {new Date(order.estimated_delivery).toLocaleDateString('es-ES')}
                     </p>
@@ -266,12 +268,12 @@ export function ClientVerification() {
               <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center">
                 <Download className="w-5 h-5 text-purple-600" />
               </div>
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">Archivos de Traducción</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('clientVerification.translationFiles')}</h2>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <DocumentCard
-                title="Documento Original"
+                title={t('documents.originalDocument')}
                 documents={Array.isArray(order.archivos_urls) ? order.archivos_urls : []}
                 uploadDate={order.created_at}
                 wordCount={order.word_count}
@@ -279,7 +281,7 @@ export function ClientVerification() {
               />
 
               <DocumentCard
-                title="Documento Traducido"
+                title={t('documents.translatedDocument')}
                 documents={(() => {
                   if (!order.docs_translated) return [];
                   if (Array.isArray(order.docs_translated)) return order.docs_translated;
@@ -302,10 +304,10 @@ export function ClientVerification() {
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold text-green-900 dark:text-green-300">
-                      ¡Su traducción está lista!
+                      {t('clientVerification.translationReady.title')}
                     </h3>
                     <p className="text-green-800 dark:text-green-400">
-                      Puede descargar los archivos traducidos haciendo clic en los botones de descarga.
+                      {t('clientVerification.translationReady.description')}
                     </p>
                   </div>
                 </div>
@@ -318,10 +320,10 @@ export function ClientVerification() {
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-300">
-                      Traducción en Proceso
+                      {t('clientVerification.translationInProgress.title')}
                     </h3>
                     <p className="text-blue-800 dark:text-blue-400">
-                      Los archivos traducidos estarán disponibles para descarga una vez completada la traducción.
+                      {t('clientVerification.translationInProgress.description')}
                     </p>
                   </div>
                 </div>
@@ -342,13 +344,13 @@ export function ClientVerification() {
               </div>
               <div className="text-center">
                 <h3 className="text-2xl font-bold text-green-900 dark:text-green-300 mb-2">
-                  ✅ Certificación Válida
+                  {t('clientVerification.certification.title')}
                 </h3>
                 <p className="text-green-800 dark:text-green-400 font-medium mb-1">
-                  Traducción Verificada y Autenticada
+                  {t('clientVerification.certification.subtitle')}
                 </p>
                 <p className="text-sm text-green-700 dark:text-green-500">
-                  Este documento ha sido procesado por traductores profesionales certificados
+                  {t('clientVerification.certification.description')}
                 </p>
               </div>
             </div>
@@ -356,21 +358,24 @@ export function ClientVerification() {
             <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="flex items-center space-x-2 text-sm text-green-800 dark:text-green-400">
                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span className="font-medium">Traducción Profesional</span>
+                <span className="font-medium">{t('clientVerification.certification.features.professional')}</span>
               </div>
               <div className="flex items-center space-x-2 text-sm text-green-800 dark:text-green-400">
                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span className="font-medium">Verificación Completa</span>
+                <span className="font-medium">{t('clientVerification.certification.features.verified')}</span>
               </div>
               <div className="flex items-center space-x-2 text-sm text-green-800 dark:text-green-400">
                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span className="font-medium">Calidad Garantizada</span>
+                <span className="font-medium">{t('clientVerification.certification.features.guaranteed')}</span>
               </div>
             </div>
             
             <div className="mt-4 text-center">
               <p className="text-xs text-green-600 dark:text-green-500 font-medium">
-                Orden #{order.id.slice(0, 8)} | Verificada el {new Date().toLocaleDateString('es-ES')}
+                {t('clientVerification.certification.verifiedOn', { 
+                  id: order.id.slice(0, 8), 
+                  date: new Date().toLocaleDateString('es-ES') 
+                })}
               </p>
             </div>
           </div>
@@ -378,10 +383,10 @@ export function ClientVerification() {
           {/* Contact Information */}
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-8">
             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
-              ¿Necesita Ayuda?
+              {t('clientVerification.needHelp.title')}
             </h3>
             <p className="text-gray-600 dark:text-gray-400 mb-4">
-              Si tiene preguntas sobre su traducción o necesita asistencia, no dude en contactarnos:
+              {t('clientVerification.needHelp.description')}
             </p>
             <div className="space-y-4">
               {/* Company Contact Information */}
@@ -389,7 +394,7 @@ export function ClientVerification() {
                 <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 border border-blue-200 dark:border-blue-700">
                   <div className="flex items-center space-x-2">
                     <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-600 border-t-transparent"></div>
-                    <span className="text-sm text-blue-800 dark:text-blue-400">Cargando información de contacto...</span>
+                    <span className="text-sm text-blue-800 dark:text-blue-400">{t('clientVerification.needHelp.loadingContact')}</span>
                   </div>
                 </div>
               ) : companySettings && (companySettings.company_email || companySettings.company_phone || companySettings.company_name) ? (
@@ -422,7 +427,7 @@ export function ClientVerification() {
                     📧 admin@translation.com
                   </p>
                   <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">
-                    Información de contacto por defecto (configuración no disponible)
+                    {t('clientVerification.needHelp.noContactInfo')}
                   </p>
                 </div>
               )}
@@ -434,7 +439,7 @@ export function ClientVerification() {
                     className="flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-4 py-2 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl font-medium"
                   >
                     <ExternalLink className="w-4 h-4" />
-                    <span>Enviar Email</span>
+                    <span>{t('clientVerification.needHelp.sendEmail')}</span>
                   </a>
                 )}
                 {companySettings?.company_phone && !companyLoading && (
@@ -443,7 +448,7 @@ export function ClientVerification() {
                     className="flex items-center space-x-2 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-4 py-2 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl font-medium"
                   >
                     <ExternalLink className="w-4 h-4" />
-                    <span>Llamar Ahora</span>
+                    <span>{t('clientVerification.needHelp.callNow')}</span>
                   </a>
                 )}
               </div>

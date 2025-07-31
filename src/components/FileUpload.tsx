@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Upload, File, X, CheckCircle, AlertCircle, Cloud } from 'lucide-react';
 
 interface FileUploadProps {
@@ -18,6 +19,7 @@ export function FileUpload({
   currentFile,
   loading = false
 }: FileUploadProps) {
+  const { t } = useTranslation();
   const [dragActive, setDragActive] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -55,7 +57,7 @@ export function FileUpload({
   const validateAndSelectFile = (file: File) => {
     // Check file size
     if (file.size > maxSize * 1024 * 1024) {
-      setError(`El archivo es demasiado grande. Máximo ${maxSize}MB permitido.`);
+      setError(t('fileUpload.fileTooLarge', { size: maxSize }));
       return;
     }
 
@@ -64,7 +66,7 @@ export function FileUpload({
     const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
     
     if (!acceptedTypes.some(type => type === fileExtension || file.type.includes(type.replace('.', '')))) {
-      setError(`Tipo de archivo no permitido. Solo se aceptan: ${accept}`);
+      setError(t('fileUpload.invalidType', { types: accept }));
       return;
     }
 
@@ -132,10 +134,10 @@ export function FileUpload({
             <p className={`text-xl font-bold transition-all duration-300 ${
               dragActive ? 'text-blue-600' : currentFile ? 'text-green-600' : 'text-gray-700 dark:text-gray-300'
             }`}>
-              {loading ? 'Subiendo archivo...' : currentFile ? 'Archivo cargado' : 'Arrastra tu archivo aquí'}
+              {loading ? t('fileUpload.uploading') : currentFile ? t('fileUpload.fileLoaded') : t('fileUpload.dragHere')}
             </p>
             <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 font-medium">
-              {currentFile ? currentFile : `o haz clic para seleccionar (${accept}, máx. ${maxSize}MB)`}
+              {currentFile ? currentFile : t('fileUpload.clickToSelect') + ` (${t('fileUpload.supportedTypes', { types: accept })}, ${t('fileUpload.maxSize', { size: maxSize })})`}
             </p>
           </div>
         </div>
@@ -143,7 +145,7 @@ export function FileUpload({
         {dragActive && (
           <div className="absolute inset-0 bg-blue-500 bg-opacity-20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
             <div className="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold shadow-xl animate-pulse">
-              Suelta el archivo aquí
+              {t('fileUpload.dropHere')}
             </div>
           </div>
         )}
