@@ -13,6 +13,7 @@ export function ClientVerification() {
   const [order, setOrder] = useState<TranslationOrder | null>(null);
   const [loading, setLoading] = useState(true);
   const [companySettings, setCompanySettings] = useState<CompanySettings | null>(null);
+  const [companyLoading, setCompanyLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const loadOrder = async () => {
@@ -42,10 +43,15 @@ export function ClientVerification() {
 
   const loadCompanySettings = async () => {
     try {
+      setCompanyLoading(true);
+      console.log('Loading company settings for client verification...');
       const settings = await CompanyService.getSettings();
+      console.log('Company settings loaded:', settings);
       setCompanySettings(settings);
     } catch (err) {
       console.error('Error loading company settings:', err);
+    } finally {
+      setCompanyLoading(false);
     }
   };
 
@@ -333,7 +339,14 @@ export function ClientVerification() {
             </p>
             <div className="space-y-4">
               {/* Company Contact Information */}
-              {companySettings && (
+              {companyLoading ? (
+                <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 border border-blue-200 dark:border-blue-700">
+                  <div className="flex items-center space-x-2">
+                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-600 border-t-transparent"></div>
+                    <span className="text-sm text-blue-800 dark:text-blue-400">Cargando información de contacto...</span>
+                  </div>
+                </div>
+              ) : companySettings && (companySettings.company_email || companySettings.company_phone || companySettings.company_name) ? (
                 <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 border border-blue-200 dark:border-blue-700">
                   <h4 className="font-semibold text-blue-900 dark:text-blue-300 mb-2">
                     {companySettings.company_name || 'Translation Services'}
@@ -354,19 +367,31 @@ export function ClientVerification() {
                     </p>
                   )}
                 </div>
+              ) : (
+                <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    <strong>Translation Services Inc.</strong>
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    📧 admin@translation.com
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">
+                    Información de contacto por defecto (configuración no disponible)
+                  </p>
+                </div>
               )}
               
               <div className="flex flex-col sm:flex-row gap-4">
-                {companySettings?.company_email && (
+                {(companySettings?.company_email || !companyLoading) && (
                   <a
-                    href={`mailto:${companySettings.company_email}?subject=Consulta sobre traducción - Orden ${order?.id?.slice(0, 8)}&body=Hola,%0A%0ATengo una consulta sobre mi orden de traducción ${order?.id?.slice(0, 8)}.%0A%0ADetalles:%0A- Cliente: ${order?.nombre}%0A- Idiomas: ${order?.idioma_origen} → ${order?.idioma_destino}%0A- Estado: ${order?.status}%0A%0AGracias por su atención.`}
+                    href={`mailto:${companySettings?.company_email || 'admin@translation.com'}?subject=Consulta sobre traducción - Orden ${order?.id?.slice(0, 8)}&body=Hola,%0A%0ATengo una consulta sobre mi orden de traducción ${order?.id?.slice(0, 8)}.%0A%0ADetalles:%0A- Cliente: ${order?.nombre}%0A- Idiomas: ${order?.idioma_origen} → ${order?.idioma_destino}%0A- Estado: ${order?.status}%0A%0AGracias por su atención.`}
                     className="flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-4 py-2 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl font-medium"
                   >
                     <ExternalLink className="w-4 h-4" />
                     <span>Enviar Email</span>
                   </a>
                 )}
-                {companySettings?.company_phone && (
+                {companySettings?.company_phone && !companyLoading && (
                   <a
                     href={`tel:${companySettings.company_phone}`}
                     className="flex items-center space-x-2 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-4 py-2 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl font-medium"
@@ -374,12 +399,6 @@ export function ClientVerification() {
                     <ExternalLink className="w-4 h-4" />
                     <span>Llamar Ahora</span>
                   </a>
-                )}
-                {(!companySettings?.company_email && !companySettings?.company_phone) && (
-                  <div className="text-center py-4 text-gray-500 dark:text-gray-400">
-                    <p className="text-sm">Información de contacto no disponible en este momento.</p>
-                    <p className="text-xs mt-1">Por favor, intente más tarde.</p>
-                  </div>
                 )}
               </div>
             </div>

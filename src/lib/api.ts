@@ -93,6 +93,8 @@ export class ProfileService {
 
 export class CompanyService {
   static async getSettings(): Promise<CompanySettings | null> {
+    console.log('CompanyService.getSettings() called');
+    
     const { data, error } = await supabase
       .from('company_settings')
       .select('*')
@@ -100,10 +102,16 @@ export class CompanyService {
       .single();
 
     if (error) {
-      console.error('Error fetching company settings:', error);
+      console.error('Error fetching company settings:', {
+        error,
+        message: error.message,
+        details: error.details,
+        hint: error.hint
+      });
       return null;
     }
 
+    console.log('Company settings fetched successfully:', data);
     return data;
   }
 
