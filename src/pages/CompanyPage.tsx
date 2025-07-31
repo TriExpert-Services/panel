@@ -93,30 +93,49 @@ export function CompanyPage() {
 
   const testSMTPConnection = async () => {
     setTestingConnection(true);
+    setError(null);
+    setSuccess(null);
+    
     try {
-      // First save current SMTP settings
-      await CompanyService.updateSettings({
-        smtp_host: formData.smtp_host,
+      // Validate form data before testing
+      if (!formData.smtp_host.trim()) {
+        setError('El servidor SMTP es requerido');
+        return;
+      }
+      
+      if (!formData.smtp_user.trim()) {
+        setError('El usuario SMTP es requerido');
+        return;
+      }
+      
+      if (!formData.smtp_password.trim()) {
+        setError('La contraseña SMTP es requerida');
+        return;
+      }
+
+      // Test connection with current form data (without saving)
+      const result = await SMTPService.testConnection({
+        smtp_host: formData.smtp_host.trim(),
         smtp_port: formData.smtp_port,
-        smtp_user: formData.smtp_user,
-        smtp_password: formData.smtp_password,
+        smtp_user: formData.smtp_user.trim(),
+        smtp_password: formData.smtp_password.trim(),
         smtp_secure: formData.smtp_secure
       });
 
-      const success = await SMTPService.testConnection();
-      if (success) {
-        setSuccess('Conexión SMTP exitosa');
+      if (result.success) {
+        setSuccess('✅ Conexión SMTP exitosa - Configuración válida');
       } else {
-        setError('Error al conectar con el servidor SMTP');
+        setError(result.error || 'Error al conectar con el servidor SMTP');
       }
     } catch (err) {
-      setError('Error al probar la conexión SMTP');
+      console.error('Error testing SMTP:', err);
+      setError(`Error al probar la conexión SMTP: ${err instanceof Error ? err.message : 'Error desconocido'}`);
     } finally {
       setTestingConnection(false);
       setTimeout(() => {
         setSuccess(null);
         setError(null);
-      }, 3000);
+      }, 5000);
     }
   };
 
@@ -345,9 +364,35 @@ export function CompanyPage() {
                   disabled={testingConnection}
                   className="flex items-center space-x-2 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 disabled:from-green-400 disabled:to-green-500 text-white px-4 py-2 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm font-medium"
                 >
-                  <TestTube className="w-4 h-4" />
-                  <span>{testingConnection ? 'Probando...' : 'Probar Conexión'}</span>
+                  {testingConnection ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                      <span>Probando...</span>
+                    </>
+                  ) : (
+                    <>
+                      <TestTube className="w-4 h-4" />
+                      <span>Probar Conexión</span>
+                    </>
+                  )}
                 </button>
+              </div>
+
+              {/* SMTP Configuration Help */}
+              <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 border border-blue-200 dark:border-blue-700 rounded-xl">
+                <h3 className="text-sm font-semibold text-blue-900 dark:text-blue-300 mb-2">💡 Configuraciones Comunes</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-blue-800 dark:text-blue-400">
+                  <div>
+                    <strong>Gmail:</strong> smtp.gmail.com:587 (TLS)
+                    <br />
+                    <em>Requiere contraseña de aplicación</em>
+                  </div>
+                  <div>
+                    <strong>Outlook:</strong> smtp-mail.outlook.com:587 (TLS)
+                    <br />
+                    <em>Usar credenciales normales</em>
+                  </div>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

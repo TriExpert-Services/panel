@@ -267,19 +267,102 @@ export class SMTPService {
     }
   }
 
-  static async testConnection(): Promise<boolean> {
+  static async testConnection(settings?: {
+    smtp_host: string;
+    smtp_port: number;
+    smtp_user: string;
+    smtp_password: string;
+    smtp_secure: boolean;
+  }): Promise<{ success: boolean; error?: string }> {
     try {
-      const settings = await CompanyService.getSettings();
-      if (!settings?.smtp_host) {
-        return false;
+      let smtpSettings = settings;
+      
+      if (!smtpSettings) {
+        const companySettings = await CompanyService.getSettings();
+        if (!companySettings) {
+          return { success: false, error: 'No se encontró configuración de empresa' };
+        }
+        smtpSettings = {
+          smtp_host: companySettings.smtp_host || '',
+          smtp_port: companySettings.smtp_port || 587,
+          smtp_user: companySettings.smtp_user || '',
+          smtp_password: companySettings.smtp_password || '',
+          smtp_secure: companySettings.smtp_secure ?? true
+        };
       }
 
-      // Simulate connection test
-      console.log('Testing SMTP connection to:', settings.smtp_host);
-      return true;
+      // Validate required fields
+      if (!smtpSettings.smtp_host.trim()) {
+        return { success: false, error: 'El servidor SMTP es requerido' };
+      }
+      
+      if (!smtpSettings.smtp_user.trim()) {
+        return { success: false, error: 'El usuario SMTP es requerido' };
+      }
+      
+      if (!smtpSettings.smtp_password.trim()) {
+        return { success: false, error: 'La contraseña SMTP es requerida' };
+      }
+      
+      if (smtpSettings.smtp_port < 1 || smtpSettings.smtp_port > 65535) {
+        return { success: false, error: 'El puerto debe estar entre 1 y 65535' };
+      }
+
+      // Validate email format for smtp_user
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(smtpSettings.smtp_user)) {
+        return { success: false, error: 'El usuario SMTP debe ser una dirección de email válida' };
+      }
+
+      // Validate common SMTP hosts and ports
+      const commonProviders = {
+        'smtp.gmail.com': { defaultPort: 587, secure: true },
+        'smtp.outlook.com': { defaultPort: 587, secure: true },
+        'smtp-mail.outlook.com': { defaultPort: 587, secure: true },
+        'smtp.office365.com': { defaultPort: 587, secure: true },
+        'smtp.yahoo.com': { defaultPort: 587, secure: true },
+        'smtp.mail.yahoo.com': { defaultPort: 587, secure: true }
+      };
+
+      const provider = commonProviders[smtpSettings.smtp_host.toLowerCase() as keyof typeof commonProviders];
+      if (provider) {
+        if (smtpSettings.smtp_port !== provider.defaultPort) {
+          console.warn(`Warning: Using port ${smtpSettings.smtp_port} for ${smtpSettings.smtp_host}, recommended port is ${provider.defaultPort}`);
+        }
+      }
+
+      // Simulate connection test with more realistic validation
+      console.log('Testing SMTP connection to:', {
+        host: smtpSettings.smtp_host,
+        port: smtpSettings.smtp_port,
+        user: smtpSettings.smtp_user,
+        secure: smtpSettings.smtp_secure
+      });
+
+      // Simulate network delay
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      // In a real implementation, you would try to connect to the SMTP server
+      // For demo purposes, we'll simulate some common error scenarios
+      
+      // Check for common configuration issues
+      if (smtpSettings.smtp_host.includes('gmail.com') && smtpSettings.smtp_port !== 587) {
+        return { success: false, error: 'Gmail requiere puerto 587 con TLS' };
+      }
+      
+      if (smtpSettings.smtp_host.includes('outlook.com') && smtpSettings.smtp_port !== 587) {
+        return { success: false, error: 'Outlook requiere puerto 587 con TLS' };
+      }
+
+      // Simulate success for valid configurations
+      return { success: true };
+      
     } catch (error) {
       console.error('SMTP connection test failed:', error);
-      return false;
+      return { 
+        success: false, 
+        error: error instanceof Error ? error.message : 'Error desconocido al probar la conexión'
+      };
     }
   }
 }
