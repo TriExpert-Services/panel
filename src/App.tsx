@@ -6,6 +6,7 @@ import { Dashboard } from './pages/Dashboard';
 import { OrderDetail } from './pages/OrderDetail';
 import { ProfilePage } from './pages/ProfilePage';
 import { CompanyPage } from './pages/CompanyPage';
+import { EmailTemplatesPage } from './pages/EmailTemplatesPage';
 import { LoginPage } from './pages/LoginPage';
 import { ClientVerification } from './pages/ClientVerification';
 
@@ -23,6 +24,7 @@ function App() {
                 <Route path="/orden/:id" element={<OrderDetail />} />
                 <Route path="/perfil" element={<ProfilePage />} />
                 <Route path="/empresa" element={<CompanyPage />} />
+                <Route path="/plantillas" element={<EmailTemplatesPage />} />
               </Routes>
             </Layout>
           </ProtectedRoute>

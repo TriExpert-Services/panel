@@ -80,6 +80,17 @@ export function Layout({ children }: LayoutProps) {
                 <Building className="w-4 h-4" />
                 <span>Empresa</span>
               </Link>
+              <Link
+                to="/plantillas"
+                className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  location.pathname === '/plantillas'
+                    ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
+                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700'
+                }`}
+              >
+                <Settings className="w-4 h-4" />
+                <span>Plantillas</span>
+              </Link>
               {isOrderDetail && (
                 <div className="flex items-center space-x-2 px-3 py-2 bg-gray-100 dark:bg-gray-700 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300">
                   <FileText className="w-4 h-4" />

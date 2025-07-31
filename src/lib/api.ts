@@ -437,3 +437,133 @@ export class BackupService {
     }
   }
 }
+
+// Email Template Service
+export interface EmailTemplate {
+  id: string;
+  name: string;
+  type: string;
+  subject: string;
+  html_content: string;
+  text_content: string;
+  variables: string[];
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export class EmailTemplateService {
+  static async getTemplates(): Promise<EmailTemplate[]> {
+    const { data, error } = await supabase
+      .from('email_templates')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching email templates:', error);
+      throw error;
+    }
+
+    return data || [];
+  }
+
+  static async getTemplate(id: string): Promise<EmailTemplate | null> {
+    const { data, error } = await supabase
+      .from('email_templates')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) {
+      console.error('Error fetching email template:', error);
+      return null;
+    }
+
+    return data;
+  }
+
+  static async createTemplate(templateData: Omit<EmailTemplate, 'id' | 'created_at' | 'updated_at'>): Promise<EmailTemplate> {
+    const { data, error } = await supabase
+      .from('email_templates')
+      .insert({
+        ...templateData,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error creating email template:', error);
+      throw error;
+    }
+
+    return data;
+  }
+
+  static async updateTemplate(id: string, updates: Partial<EmailTemplate>): Promise<EmailTemplate> {
+    const { data, error } = await supabase
+      .from('email_templates')
+      .update({
+        ...updates,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error updating email template:', error);
+      throw error;
+    }
+
+    return data;
+  }
+
+  static async deleteTemplate(id: string): Promise<void> {
+    const { error } = await supabase
+      .from('email_templates')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('Error deleting email template:', error);
+      throw error;
+    }
+  }
+
+  static replaceVariables(content: string, variables: Record<string, string>): string {
+    let processedContent = content;
+    
+    Object.entries(variables).forEach(([key, value]) => {
+      const regex = new RegExp(`#{${key}}`, 'g');
+      processedContent = processedContent.replace(regex, value);
+    });
+    
+    return processedContent;
+  }
+
+  static getAvailableVariables(): string[] {
+    return [
+      'client_name',
+      'order_id', 
+      'source_language',
+      'target_language',
+      'processing_time',
+      'status',
+      'progress',
+      'verification_url',
+      'status_message'
+    ];
+  }
+
+  static getTemplateTypes(): Array<{value: string, label: string}> {
+    return [
+      { value: 'order_created', label: 'Orden Creada' },
+      { value: 'order_updated', label: 'Estado Actualizado' },
+      { value: 'verification_link', label: 'Enlace de Verificación' },
+      { value: 'order_completed', label: 'Traducción Completada' },
+      { value: 'order_delivered', label: 'Orden Entregada' }
+    ];
+  }
+}
