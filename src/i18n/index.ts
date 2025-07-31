@@ -31,6 +31,8 @@ const resources = {
         "title": "Dashboard",
         "subtitle": "Gestiona todas las órdenes de traducción",
         "newOrder": "Nueva Orden",
+        "loading": "Cargando órdenes...",
+        "error": "Error al cargar las órdenes de traducción",
         "noOrders": {
           "title": "No hay órdenes",
           "description": "No se encontraron órdenes con los filtros aplicados",
@@ -547,7 +549,7 @@ const resources = {
         "orderNotFound": "Order not found",
         "updateError": "Error updating order",
         "uploadError": "Error uploading file"
-      },</parameter>
+      },
       "app": {
         "title": "Translation Administration System",
         "version": "v{{version}}",
