@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { User, Mail, Phone, Building, Save, Camera, Shield, Clock } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { ProfileService, UserProfile } from '../lib/api';
 
 export function ProfilePage() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<UserProfile | null>(null);
