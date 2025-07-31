@@ -10,6 +10,7 @@ import { TranslationOrder, TranslationOrderService } from '../lib/supabase';
 export function OrderDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [order, setOrder] = useState<TranslationOrder | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
