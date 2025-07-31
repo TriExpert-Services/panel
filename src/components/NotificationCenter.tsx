@@ -226,6 +226,7 @@ interface NotificationBellProps {
 
 export function NotificationBell({ onClick }: NotificationBellProps) {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {

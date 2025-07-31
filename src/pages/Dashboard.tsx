@@ -114,10 +114,6 @@ export function Dashboard() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
-            Dashboard
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400 font-medium">Gestiona todas las órdenes de traducción</p>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
             {t('dashboard.title')}
           </h1>
           <p className="text-gray-600 dark:text-gray-400 font-medium">{t('dashboard.subtitle')}</p>
@@ -136,7 +132,6 @@ export function Dashboard() {
               <TrendingUp className="w-6 h-6 text-blue-600" />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total</p>
               <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{t('dashboard.stats.total')}</p>
               <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.total}</p>
             </div>
@@ -149,7 +144,6 @@ export function Dashboard() {
               <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Nuevas</p>
               <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{t('dashboard.stats.new')}</p>
               <p className="text-2xl font-bold text-blue-600">{stats.nuevo}</p>
             </div>
@@ -162,7 +156,6 @@ export function Dashboard() {
               <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">En Proceso</p>
               <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{t('dashboard.stats.inProgress')}</p>
               <p className="text-2xl font-bold text-yellow-600">{stats.en_proceso}</p>
             </div>
@@ -175,7 +168,6 @@ export function Dashboard() {
               <div className="w-3 h-3 bg-green-500 rounded-full"></div>
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Completadas</p>
               <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{t('dashboard.stats.completed')}</p>
               <p className="text-2xl font-bold text-green-600">{stats.completado}</p>
             </div>
@@ -188,7 +180,6 @@ export function Dashboard() {
               <div className="w-3 h-3 bg-gray-500 dark:bg-gray-400 rounded-full"></div>
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Entregadas</p>
               <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{t('dashboard.stats.delivered')}</p>
               <p className="text-2xl font-bold text-gray-600 dark:text-gray-400">{stats.entregado}</p>
             </div>
@@ -217,7 +208,6 @@ export function Dashboard() {
               onChange={(e) => setStatusFilter(e.target.value)}
               className="px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
             >
-              <option value="all">Todos los estados</option>
               <option value="all">{t('dashboard.filters.allStatuses')}</option>
               <option value="nuevo">{t('orders.statuses.nuevo')}</option>
               <option value="en_proceso">{t('orders.statuses.en_proceso')}</option>
