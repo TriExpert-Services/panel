@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Navigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Languages, Eye, EyeOff, Mail, Lock, User, AlertCircle } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 export function LoginPage() {
   const { user, signIn, signUp, loading } = useAuth();
+  const { t } = useTranslation();
   const [isSignUp, setIsSignUp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -28,11 +30,11 @@ export function LoginPage() {
     try {
       if (isSignUp) {
         if (formData.password !== formData.confirmPassword) {
-          setError('Las contraseñas no coinciden');
+          setError(t('auth.passwordMismatch'));
           return;
         }
         if (formData.password.length < 6) {
-          setError('La contraseña debe tener al menos 6 caracteres');
+          setError(t('auth.passwordMinLength'));
           return;
         }
         const { error } = await signUp(formData.email, formData.password);
@@ -40,13 +42,13 @@ export function LoginPage() {
           setError(error.message);
         } else {
           setError(null);
-          alert('Cuenta creada exitosamente. Revisa tu email para confirmar tu cuenta.');
+          alert(t('auth.accountCreated'));
           setIsSignUp(false);
         }
       } else {
         const { error } = await signIn(formData.email, formData.password);
         if (error) {
-          setError('Credenciales inválidas');
+          setError(t('auth.invalidCredentials'));
         }
       }
     } catch (err) {
@@ -73,7 +75,7 @@ export function LoginPage() {
             <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-200 mx-auto"></div>
             <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-600 border-t-transparent absolute top-0 left-1/2 transform -translate-x-1/2"></div>
           </div>
-          <p className="text-gray-600 dark:text-gray-400 font-medium">Cargando...</p>
+          <p className="text-gray-600 dark:text-gray-400 font-medium">{t('common.loading')}...</p>
         </div>
       </div>
     );
@@ -87,10 +89,10 @@ export function LoginPage() {
             <Languages className="w-10 h-10 text-white" />
           </div>
           <h1 className="mt-6 text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
-            Administrador de Traducciones
+            {t('app.title')}
           </h1>
           <p className="mt-2 text-lg text-gray-600 dark:text-gray-400 font-medium">
-            {isSignUp ? 'Crear nueva cuenta' : 'Inicia sesión en tu cuenta'}
+            {isSignUp ? t('auth.signup') : t('auth.login')}
           </p>
         </div>
 
@@ -105,7 +107,7 @@ export function LoginPage() {
 
             <div>
               <label htmlFor="email" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                Correo Electrónico
+                {t('auth.email')}
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -126,7 +128,7 @@ export function LoginPage() {
 
             <div>
               <label htmlFor="password" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                Contraseña
+                {t('auth.password')}
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -159,7 +161,7 @@ export function LoginPage() {
             {isSignUp && (
               <div>
                 <label htmlFor="confirmPassword" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                  Confirmar Contraseña
+                  {t('auth.confirmPassword')}
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -193,7 +195,7 @@ export function LoginPage() {
                 ) : (
                   <div className="flex items-center space-x-2">
                     <User className="w-4 h-4" />
-                    <span>{isSignUp ? 'Crear Cuenta' : 'Iniciar Sesión'}</span>
+                    <span>{isSignUp ? t('auth.createAccount') : t('auth.login')}</span>
                   </div>
                 )}
               </button>
@@ -209,7 +211,7 @@ export function LoginPage() {
                 }}
                 className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium transition-colors"
               >
-                {isSignUp ? '¿Ya tienes cuenta? Inicia sesión' : '¿No tienes cuenta? Regístrate'}
+                {isSignUp ? t('auth.hasAccount') : t('auth.noAccount')}
               </button>
             </div>
           </form>
@@ -217,10 +219,10 @@ export function LoginPage() {
 
         <div className="text-center">
           <p className="text-xs text-gray-500 dark:text-gray-400">
-            Sistema de Administración de Traducciones v1.0.0
+            {t('app.title')} v1.0.0
           </p>
           <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
-            Acceso seguro con autenticación
+            {t('app.description')}
           </p>
         </div>
       </div>

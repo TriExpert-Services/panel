@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Eye, Trash2, RefreshCw, Plus, Search, Filter, Download, TrendingUp } from 'lucide-react';
 import { StatusBadge } from '../components/StatusBadge';
 import { PriorityBadge } from '../components/PriorityBadge';
@@ -8,6 +9,7 @@ import { TranslationOrder, TranslationOrderService } from '../lib/supabase';
 
 export function Dashboard() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [orders, setOrders] = useState<TranslationOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -115,10 +117,14 @@ export function Dashboard() {
             Dashboard
           </h1>
           <p className="text-gray-600 dark:text-gray-400 font-medium">Gestiona todas las órdenes de traducción</p>
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
+            {t('dashboard.title')}
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400 font-medium">{t('dashboard.subtitle')}</p>
         </div>
         <button className="flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-3 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl font-semibold">
           <Plus className="w-4 h-4" />
-          <span>Nueva Orden</span>
+          <span>{t('dashboard.newOrder')}</span>
         </button>
       </div>
 
@@ -131,6 +137,7 @@ export function Dashboard() {
             </div>
             <div>
               <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{t('dashboard.stats.total')}</p>
               <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.total}</p>
             </div>
           </div>
@@ -143,6 +150,7 @@ export function Dashboard() {
             </div>
             <div>
               <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Nuevas</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{t('dashboard.stats.new')}</p>
               <p className="text-2xl font-bold text-blue-600">{stats.nuevo}</p>
             </div>
           </div>
@@ -155,6 +163,7 @@ export function Dashboard() {
             </div>
             <div>
               <p className="text-sm font-medium text-gray-600 dark:text-gray-400">En Proceso</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{t('dashboard.stats.inProgress')}</p>
               <p className="text-2xl font-bold text-yellow-600">{stats.en_proceso}</p>
             </div>
           </div>
@@ -167,6 +176,7 @@ export function Dashboard() {
             </div>
             <div>
               <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Completadas</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{t('dashboard.stats.completed')}</p>
               <p className="text-2xl font-bold text-green-600">{stats.completado}</p>
             </div>
           </div>
@@ -179,6 +189,7 @@ export function Dashboard() {
             </div>
             <div>
               <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Entregadas</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{t('dashboard.stats.delivered')}</p>
               <p className="text-2xl font-bold text-gray-600 dark:text-gray-400">{stats.entregado}</p>
             </div>
           </div>
@@ -192,7 +203,7 @@ export function Dashboard() {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-5 h-5" />
             <input
               type="text"
-              placeholder="Buscar por nombre, correo o idiomas..."
+              placeholder={t('dashboard.filters.searchPlaceholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
@@ -207,10 +218,11 @@ export function Dashboard() {
               className="px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
             >
               <option value="all">Todos los estados</option>
-              <option value="nuevo">Nuevo</option>
-              <option value="en_proceso">En Proceso</option>
-              <option value="completado">Completado</option>
-              <option value="entregado">Entregado</option>
+              <option value="all">{t('dashboard.filters.allStatuses')}</option>
+              <option value="nuevo">{t('orders.statuses.nuevo')}</option>
+              <option value="en_proceso">{t('orders.statuses.en_proceso')}</option>
+              <option value="completado">{t('orders.statuses.completado')}</option>
+              <option value="entregado">{t('orders.statuses.entregado')}</option>
             </select>
           </div>
         </div>
@@ -221,14 +233,14 @@ export function Dashboard() {
         <div className="px-8 py-6 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">Órdenes de Traducción</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('dashboard.title')}</h2>
               <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                {filteredOrders.length} de {orders.length} órdenes
+                {t('dashboard.table.ordersCount', { count: filteredOrders.length, total: orders.length })}
               </p>
             </div>
             <button className="flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 transition-colors">
               <Download className="w-4 h-4" />
-              <span className="text-sm font-medium">Exportar</span>
+              <span className="text-sm font-medium">{t('common.export')}</span>
             </button>
           </div>
         </div>
@@ -238,25 +250,25 @@ export function Dashboard() {
             <thead className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800">
               <tr>
                 <th className="px-8 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Cliente
+                  {t('dashboard.table.client')}
                 </th>
                 <th className="px-8 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Contacto
+                  {t('dashboard.table.contact')}
                 </th>
                 <th className="px-8 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Idiomas
+                  {t('dashboard.table.languages')}
                 </th>
                 <th className="px-8 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Estado
+                  {t('dashboard.table.status')}
                 </th>
                 <th className="px-8 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Tiempo Procesamiento
+                  {t('dashboard.table.processingTime')}
                 </th>
                 <th className="px-8 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Fecha
+                  {t('dashboard.table.date')}
                 </th>
                 <th className="px-8 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Acciones
+                  {t('dashboard.table.actions')}
                 </th>
               </tr>
             </thead>
@@ -291,14 +303,14 @@ export function Dashboard() {
                         className="inline-flex items-center px-4 py-2 border border-blue-300 dark:border-blue-600 rounded-lg text-sm text-blue-700 dark:text-blue-400 bg-white dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 font-medium shadow-sm hover:shadow-md"
                       >
                         <Eye className="w-4 h-4 mr-1" />
-                        Ver
+                       {t('common.view')}
                       </button>
                       <button
                         onClick={() => setDeleteId(order.id)}
                         className="inline-flex items-center px-4 py-2 border border-red-300 dark:border-red-600 rounded-lg text-sm text-red-700 dark:text-red-400 bg-white dark:bg-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-200 font-medium shadow-sm hover:shadow-md"
                       >
                         <Trash2 className="w-4 h-4 mr-1" />
-                        Eliminar
+                       {t('common.delete')}
                       </button>
                     </div>
                   </td>
@@ -314,11 +326,11 @@ export function Dashboard() {
           <div className="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
             <Search className="w-8 h-8 text-gray-400 dark:text-gray-500" />
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">No se encontraron órdenes</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{t('dashboard.noOrders.title')}</h3>
           <p className="text-gray-600 dark:text-gray-400">
             {searchTerm || statusFilter !== 'all' 
-              ? 'Intenta ajustar los filtros de búsqueda'
-              : 'No hay órdenes de traducción disponibles'
+              ? t('dashboard.noOrders.description')
+              : t('dashboard.noOrders.noData')
             }
           </p>
         </div>
@@ -328,8 +340,8 @@ export function Dashboard() {
         isOpen={deleteId !== null}
         onClose={() => setDeleteId(null)}
         onConfirm={() => deleteId && handleDelete(deleteId)}
-        title="Eliminar Orden"
-        message="¿Estás seguro de que quieres eliminar esta orden de traducción? Esta acción no se puede deshacer."
+        title={t('confirmDialog.deleteOrder.title')}
+        message={t('confirmDialog.deleteOrder.message')}
       />
     </div>
   );
