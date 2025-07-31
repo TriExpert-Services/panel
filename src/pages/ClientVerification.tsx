@@ -329,6 +329,52 @@ export function ClientVerification() {
             )}
           </div>
 
+          {/* Certification Badge */}
+          <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-2xl shadow-sm border border-green-200 dark:border-green-700 p-8">
+            <div className="flex items-center justify-center space-x-4">
+              <div className="relative">
+                <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center shadow-xl">
+                  <Shield className="w-10 h-10 text-white" />
+                </div>
+                <div className="absolute -top-1 -right-1 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-lg">
+                  <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                </div>
+              </div>
+              <div className="text-center">
+                <h3 className="text-2xl font-bold text-green-900 dark:text-green-300 mb-2">
+                  ✅ Certificación Válida
+                </h3>
+                <p className="text-green-800 dark:text-green-400 font-medium mb-1">
+                  Traducción Verificada y Autenticada
+                </p>
+                <p className="text-sm text-green-700 dark:text-green-500">
+                  Este documento ha sido procesado por traductores profesionales certificados
+                </p>
+              </div>
+            </div>
+            
+            <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="flex items-center space-x-2 text-sm text-green-800 dark:text-green-400">
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <span className="font-medium">Traducción Profesional</span>
+              </div>
+              <div className="flex items-center space-x-2 text-sm text-green-800 dark:text-green-400">
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <span className="font-medium">Verificación Completa</span>
+              </div>
+              <div className="flex items-center space-x-2 text-sm text-green-800 dark:text-green-400">
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <span className="font-medium">Calidad Garantizada</span>
+              </div>
+            </div>
+            
+            <div className="mt-4 text-center">
+              <p className="text-xs text-green-600 dark:text-green-500 font-medium">
+                Orden #{order.id.slice(0, 8)} | Verificada el {new Date().toLocaleDateString('es-ES')}
+              </p>
+            </div>
+          </div>
+
           {/* Contact Information */}
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-8">
             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
