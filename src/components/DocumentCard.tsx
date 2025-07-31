@@ -27,78 +27,47 @@ export function DocumentCard({
 }: DocumentCardProps) {
   const { t } = useTranslation();
   
-  // Parse and validate documents from Supabase JSON fields
+  // Process documents array
   const validDocuments = React.useMemo(() => {
-    console.log(`=== DocumentCard [${title}] PARSING START ===`);
-    console.log('Raw documents received:', documents);
-    console.log('Type:', typeof documents);
-    console.log('Is array:', Array.isArray(documents));
-    
     if (!documents) {
-      console.log('No documents found');
       return [];
     }
     
-    let processedDocs: string[] = [];
-    
-    // If documents is not an array, try to make it one
+    // Ensure we have an array
     const docsArray = Array.isArray(documents) ? documents : [documents];
-    console.log('Processing documents array:', docsArray);
     
-    for (let i = 0; i < docsArray.length; i++) {
-      const doc = docsArray[i];
-      console.log(`Processing doc ${i}:`, doc, typeof doc);
-      
-      if (typeof doc === 'string') {
+    // Filter and process valid document URLs
+    const processedDocs: string[] = [];
+    
+    for (const doc of docsArray) {
+      if (doc && typeof doc === 'string') {
         const trimmedDoc = doc.trim();
-        
-        // Check if it's a JSON array string like ["url1", "url2"]
-        if (trimmedDoc.startsWith('[') && trimmedDoc.endsWith(']')) {
-          try {
-            console.log('Attempting to parse JSON array:', trimmedDoc);
-            const parsed = JSON.parse(trimmedDoc);
-            console.log('Successfully parsed:', parsed);
-            
-            if (Array.isArray(parsed)) {
-              processedDocs.push(...parsed.filter(url => url && typeof url === 'string'));
-              console.log('Added URLs from parsed array:', parsed);
+        if (trimmedDoc.length > 0) {
+          // Try to parse JSON array strings
+          if (trimmedDoc.startsWith('[') && trimmedDoc.endsWith(']')) {
+            try {
+              const parsed = JSON.parse(trimmedDoc);
+              if (Array.isArray(parsed)) {
+                processedDocs.push(...parsed.filter(url => url && typeof url === 'string' && url.trim().length > 0));
+              }
+            } catch (e) {
+              // If parsing fails, treat as regular string if it looks like a URL
+              if (trimmedDoc.includes('http') || trimmedDoc.includes('blob:')) {
+                processedDocs.push(trimmedDoc);
+              }
             }
-          } catch (e) {
-            console.log('Failed to parse as JSON, treating as regular string:', e);
-            // If parsing fails, treat as regular string
-            if (trimmedDoc.startsWith('http') || trimmedDoc.startsWith('blob:')) {
-              processedDocs.push(trimmedDoc);
-            }
+          } else {
+            // Regular string - add if it looks like a URL
+            processedDocs.push(trimmedDoc);
           }
         }
-        // Check if it's a single URL
-        else if (trimmedDoc.startsWith('http') || trimmedDoc.startsWith('blob:')) {
-          console.log('Found direct URL:', trimmedDoc);
-          processedDocs.push(trimmedDoc);
-        } else {
-          console.log('String is not a recognizable URL format:', trimmedDoc);
-        }
-      } else {
-        console.log('Document is not a string, skipping:', typeof doc);
       }
     }
     
-    console.log('Final processed documents:', processedDocs);
-    console.log(`=== DocumentCard [${title}] PARSING END ===`);
     return processedDocs;
-  }, [documents]);
+  }, [documents, title]);
 
   const hasValidDocuments = validDocuments.length > 0;
-  
-  // Debug logging
-  React.useEffect(() => {
-    console.log(`DocumentCard [${title}] - Final state:`, {
-      documents,
-      validDocuments,
-      hasValidDocuments,
-      documentsLength: validDocuments.length
-    });
-  }, [title, documents, validDocuments, hasValidDocuments]);
 
   const getFileIcon = (url?: string) => {
     if (!url) return '📄';
@@ -150,13 +119,6 @@ export function DocumentCard({
     return sizes[index % sizes.length];
   };
 
-  console.log(`DocumentCard RENDER [${title}]:`, {
-    hasValidDocuments,
-    validDocumentsCount: validDocuments.length,
-    showUpload,
-    isEmpty
-  });
-
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-all duration-300">
       <div className="flex items-center justify-between mb-4">
@@ -178,9 +140,6 @@ export function DocumentCard({
           </div>
           <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">
             {showUpload ? t('documents.noTranslatedDocs') : t('documents.noOriginalDocs')}
-          </p>
-          <p className="text-xs text-gray-400 dark:text-gray-500 mb-4">
-            Debug: {JSON.stringify({ documentsReceived: documents, validCount: validDocuments.length })}
           </p>
           {showUpload && onUpload && (
             <button
