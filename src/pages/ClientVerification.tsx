@@ -4,6 +4,7 @@ import { Eye, Download, Clock, Languages, Calendar, BarChart3, Shield, ExternalL
 import { StatusBadge } from '../components/StatusBadge';
 import { PriorityBadge } from '../components/PriorityBadge';
 import { DocumentCard } from '../components/DocumentCard';
+import { CompanyService, CompanySettings } from '../lib/api';
 import { TranslationOrder, TranslationOrderService } from '../lib/supabase';
 
 export function ClientVerification() {
@@ -11,6 +12,7 @@ export function ClientVerification() {
   const navigate = useNavigate();
   const [order, setOrder] = useState<TranslationOrder | null>(null);
   const [loading, setLoading] = useState(true);
+  const [companySettings, setCompanySettings] = useState<CompanySettings | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const loadOrder = async () => {
@@ -38,8 +40,18 @@ export function ClientVerification() {
     }
   };
 
+  const loadCompanySettings = async () => {
+    try {
+      const settings = await CompanyService.getSettings();
+      setCompanySettings(settings);
+    } catch (err) {
+      console.error('Error loading company settings:', err);
+    }
+  };
+
   useEffect(() => {
     loadOrder();
+    loadCompanySettings();
   }, [token]);
 
   const formatDate = (dateString: string) => {
@@ -319,21 +331,57 @@ export function ClientVerification() {
             <p className="text-gray-600 dark:text-gray-400 mb-4">
               Si tiene preguntas sobre su traducción o necesita asistencia, no dude en contactarnos:
             </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <a
-                href="mailto:soporte@translation-admin.com"
-                className="flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-4 py-2 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl font-medium"
-              >
-                <ExternalLink className="w-4 h-4" />
-                <span>Enviar Email</span>
-              </a>
-              <a
-                href="tel:+1234567890"
-                className="flex items-center space-x-2 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-4 py-2 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl font-medium"
-              >
-                <ExternalLink className="w-4 h-4" />
-                <span>Llamar Ahora</span>
-              </a>
+            <div className="space-y-4">
+              {/* Company Contact Information */}
+              {companySettings && (
+                <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 border border-blue-200 dark:border-blue-700">
+                  <h4 className="font-semibold text-blue-900 dark:text-blue-300 mb-2">
+                    {companySettings.company_name || 'Translation Services'}
+                  </h4>
+                  {companySettings.company_email && (
+                    <p className="text-sm text-blue-800 dark:text-blue-400 mb-1">
+                      📧 {companySettings.company_email}
+                    </p>
+                  )}
+                  {companySettings.company_phone && (
+                    <p className="text-sm text-blue-800 dark:text-blue-400 mb-1">
+                      📞 {companySettings.company_phone}
+                    </p>
+                  )}
+                  {companySettings.company_website && (
+                    <p className="text-sm text-blue-800 dark:text-blue-400">
+                      🌐 {companySettings.company_website}
+                    </p>
+                  )}
+                </div>
+              )}
+              
+              <div className="flex flex-col sm:flex-row gap-4">
+                {companySettings?.company_email && (
+                  <a
+                    href={`mailto:${companySettings.company_email}?subject=Consulta sobre traducción - Orden ${order?.id?.slice(0, 8)}&body=Hola,%0A%0ATengo una consulta sobre mi orden de traducción ${order?.id?.slice(0, 8)}.%0A%0ADetalles:%0A- Cliente: ${order?.nombre}%0A- Idiomas: ${order?.idioma_origen} → ${order?.idioma_destino}%0A- Estado: ${order?.status}%0A%0AGracias por su atención.`}
+                    className="flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-4 py-2 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl font-medium"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    <span>Enviar Email</span>
+                  </a>
+                )}
+                {companySettings?.company_phone && (
+                  <a
+                    href={`tel:${companySettings.company_phone}`}
+                    className="flex items-center space-x-2 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-4 py-2 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl font-medium"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    <span>Llamar Ahora</span>
+                  </a>
+                )}
+                {(!companySettings?.company_email && !companySettings?.company_phone) && (
+                  <div className="text-center py-4 text-gray-500 dark:text-gray-400">
+                    <p className="text-sm">Información de contacto no disponible en este momento.</p>
+                    <p className="text-xs mt-1">Por favor, intente más tarde.</p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
