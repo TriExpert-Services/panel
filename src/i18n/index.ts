@@ -31,8 +31,8 @@ const resources = {
         "title": "Dashboard",
         "subtitle": "Gestiona todas las órdenes de traducción",
         "newOrder": "Nueva Orden",
-        "loading": "Cargando órdenes...",
-        "error": "Error al cargar las órdenes de traducción",
+        "loading": "Loading orders...",
+        "error": "Error loading translation orders",
         "noOrders": {
           "title": "No hay órdenes",
           "description": "No se encontraron órdenes con los filtros aplicados",
@@ -309,6 +309,8 @@ const resources = {
         "title": "Dashboard",
         "subtitle": "Manage all translation orders",
         "newOrder": "New Order",
+        "loading": "Loading orders...",
+        "error": "Error loading translation orders",
         "noOrders": {
           "title": "No orders",
           "description": "No orders found with applied filters",
