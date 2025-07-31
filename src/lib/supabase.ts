@@ -31,6 +31,8 @@ export interface TranslationOrder {
   document_type?: string;
   word_count?: number;
   estimated_delivery?: string;
+  verification_token?: string;
+  client_can_download?: boolean;
 }
 
 // Database service functions
@@ -176,6 +178,53 @@ export class TranslationOrderService {
     }
 
     return data;
+  }
+
+  // Get order by verification token (public access)
+  static async getByVerificationToken(token: string): Promise<TranslationOrder | null> {
+    if (!token) {
+      throw new Error('Verification token is required');
+    }
+
+    try {
+      console.log('=== SUPABASE getByVerificationToken START ===');
+      const { data, error } = await supabase
+        .from('solicitudes_traduccion')
+        .select('*')
+        .eq('verification_token', token)
+        .single();
+
+      if (error) {
+        console.error('Error fetching order by token:', error);
+        return null;
+      }
+
+      console.log('Raw data from Supabase:', data);
+      
+      // Parse JSON fields if they come as strings from PostgreSQL
+      if (data && typeof data.docs_translated === 'string') {
+        try {
+          data.docs_translated = JSON.parse(data.docs_translated);
+        } catch (e) {
+          console.log('Could not parse docs_translated as JSON, leaving as string');
+        }
+      }
+      
+      if (data && typeof data.archivos_urls === 'string') {
+        try {
+          data.archivos_urls = JSON.parse(data.archivos_urls);
+        } catch (e) {
+          console.log('Could not parse archivos_urls as JSON, leaving as string');
+        }
+      }
+      
+      console.log('Final processed data:', data);
+      console.log('=== SUPABASE getByVerificationToken END ===');
+      return data;
+    } catch (err) {
+      console.error('Error in getByVerificationToken:', err);
+      return null;
+    }
   }
 
   // Upload file to Supabase Storage

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Save, RefreshCw, Download, Upload, FileText, Clock, User, Mail, Phone, Languages, Calendar, BarChart3 } from 'lucide-react';
+import { ArrowLeft, Save, RefreshCw, Download, Upload, FileText, Clock, User, Mail, Phone, Languages, Calendar, BarChart3, ExternalLink, Copy } from 'lucide-react';
 import { StatusBadge } from '../components/StatusBadge';
 import { PriorityBadge } from '../components/PriorityBadge';
 import { FileUpload } from '../components/FileUpload';
@@ -16,6 +16,7 @@ export function OrderDetail() {
   const [saving, setSaving] = useState(false);
   const [showFileUpload, setShowFileUpload] = useState(false);
   const [uploadingFile, setUploadingFile] = useState(false);
+  const [copySuccess, setCopySuccess] = useState(false);
   const [formData, setFormData] = useState({
     status: 'nuevo' as TranslationOrder['status'],
     progress: 0,
@@ -174,6 +175,23 @@ export function OrderDetail() {
       setError('Error al subir el archivo');
     } finally {
       setUploadingFile(false);
+    }
+  };
+
+  const getVerificationUrl = () => {
+    if (!order?.verification_token) return '';
+    const baseUrl = window.location.origin;
+    return `${baseUrl}/verificar/${order.verification_token}`;
+  };
+
+  const copyVerificationUrl = async () => {
+    const url = getVerificationUrl();
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 2000);
+    } catch (err) {
+      console.error('Error copying to clipboard:', err);
     }
   };
 
@@ -568,6 +586,51 @@ export function OrderDetail() {
 
         {/* Sidebar */}
         <div className="space-y-8">
+          {/* Client Verification Link */}
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Enlace de Verificación</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+              Comparta este enlace con el cliente para que pueda verificar el estado de su traducción y descargar archivos:
+            </p>
+            
+            <div className="space-y-3">
+              <div className="flex items-center space-x-2 bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
+                <input
+                  type="text"
+                  value={getVerificationUrl()}
+                  readOnly
+                  className="flex-1 bg-transparent text-sm text-gray-700 dark:text-gray-300 outline-none"
+                />
+                <button
+                  onClick={copyVerificationUrl}
+                  className="flex items-center space-x-1 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition-colors"
+                >
+                  <Copy className="w-3 h-3" />
+                  <span>{copySuccess ? 'Copiado' : 'Copiar'}</span>
+                </button>
+              </div>
+              
+              <div className="flex space-x-2">
+                <a
+                  href={getVerificationUrl()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center space-x-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm transition-colors font-medium flex-1 justify-center"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  <span>Vista Previa</span>
+                </a>
+                <a
+                  href={`mailto:${order?.correo}?subject=Estado de su traducción&body=Hola ${order?.nombre},%0A%0APuede verificar el estado de su traducción y descargar los archivos completados en el siguiente enlace:%0A%0A${getVerificationUrl()}%0A%0ASaludos cordiales`}
+                  className="flex items-center space-x-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm transition-colors font-medium flex-1 justify-center"
+                >
+                  <Mail className="w-4 h-4" />
+                  <span>Enviar Email</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Resumen del Proyecto</h3>
             <div className="space-y-4">

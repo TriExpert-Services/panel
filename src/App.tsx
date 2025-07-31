@@ -7,12 +7,14 @@ import { OrderDetail } from './pages/OrderDetail';
 import { ProfilePage } from './pages/ProfilePage';
 import { CompanyPage } from './pages/CompanyPage';
 import { LoginPage } from './pages/LoginPage';
+import { ClientVerification } from './pages/ClientVerification';
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/verificar/:token" element={<ClientVerification />} />
         <Route path="/*" element={
           <ProtectedRoute>
             <Layout>
