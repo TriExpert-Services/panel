@@ -248,6 +248,8 @@ export function NotificationBell({ onClick }: NotificationBellProps) {
       setUnreadCount(count);
     } catch (error) {
       console.error('Error loading unread count:', error);
+      // Silently fail and set count to 0 to prevent UI crashes
+      setUnreadCount(0);
     }
   };
 
