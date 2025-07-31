@@ -1,16 +1,36 @@
-version: '3.8'
-
 services:
   translation-admin:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: translation-admin
     ports:
       - "6300:80"
     environment:
       - NODE_ENV=production
+    env_file:
+      - .env
+    volumes:
+      - ./logs:/var/log/nginx
     restart: unless-stopped
-    networks:
-      - translation-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
-networks:
-  translation-network:
-    driver: bridge
+  # Optional: Redis for caching (uncomment if needed)
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: translation-redis
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - redis_data:/data
+  #   restart: unless-stopped
+  #   command: redis-server --save 20 1 --loglevel warning
+
+# volumes:
+#   redis_data:
+#     driver: local
